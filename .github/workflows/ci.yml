@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [main, "feature/**"]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-e-testes:
+    runs-on: ubuntu-latest
+    env:
+      DJANGO_SECRET_KEY: chave-somente-para-o-ci
+    steps:
+      - name: Baixar o código
+        uses: actions/checkout@v4
+
+      - name: Instalar o Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Instalar dependências
+        run: pip install -r requirements.txt
+
+      - name: Build - verificar o projeto Django
+        run: |
+          python manage.py check
+          python manage.py makemigrations --check --dry-run
+          python manage.py migrate --noinput
+
+      - name: Testes unitários e de integração com cobertura
+        run: |
+          coverage run manage.py test
+          coverage report --fail-under=80
