@@ -88,6 +88,11 @@ class Pedido(models.Model):
             return self.ORDEM_STATUS[posicao + 1]
         return None
 
+    @property
+    def proximo_status_nome(self):
+        proximo = self.proximo_status
+        return dict(self.STATUS)[proximo] if proximo else None
+
     def avancar_status(self):
         proximo = self.proximo_status
         if proximo is None:

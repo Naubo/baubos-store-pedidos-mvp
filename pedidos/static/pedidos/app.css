@@ -48,3 +48,9 @@ th, td { text-align: left; padding: .6rem; border-bottom: 1px solid #d1d5db; }
 .fotos img { width: 100%; height: auto; border-radius: 4px; }
 .painel { max-width: 70rem; }
 @media (min-width: 900px) { .conteudo.painel { padding: 1.5rem; } }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.filtro { display: flex; flex-wrap: wrap; align-items: end; gap: .75rem; margin-bottom: 1rem; }
+.filtro label { width: 100%; margin: 0; }
+.filtro select { width: auto; min-width: 12rem; }
+dt { font-weight: 600; margin-top: .5rem; }
+dd { margin: 0; }

@@ -2,11 +2,14 @@ import uuid
 
 from django import forms
 from django.conf import settings
+from django.contrib.auth.forms import AuthenticationForm
+from django.core.exceptions import ValidationError
 from django.core.files.base import ContentFile
 from django.db import transaction
 
 from .arte.fotos import FotoInvalida, processar_foto
 from .arte.pdf import gerar_pdf
+from . import seguranca
 from .models import Foto, Pedido, Produto
 
 
@@ -124,3 +127,27 @@ class PedidoForm(forms.Form):
         pedido.pdf_arte.save(f"{pedido.numero_pedido}-{uuid.uuid4().hex[:8]}.pdf", ContentFile(pdf), save=False)
         pedido.save(update_fields=["pdf_arte", "atualizado_em"])
         return pedido
+
+
+class LoginForm(AuthenticationForm):
+    """Login do responsável. A mensagem é a mesma para usuário ou senha errados."""
+
+    error_messages = {
+        **AuthenticationForm.error_messages,
+        "invalid_login": "Usuário ou senha incorretos.",
+        "bloqueado": "Muitas tentativas. Aguarde 15 minutos e tente de novo.",
+    }
+
+    def clean(self):
+        usuario = self.cleaned_data.get("username")
+        if usuario and seguranca.esta_bloqueado(usuario):
+            raise ValidationError(self.error_messages["bloqueado"], code="bloqueado")
+        try:
+            dados = super().clean()
+        except ValidationError:
+            if usuario:
+                seguranca.registrar_falha(usuario)
+            raise
+        if usuario:
+            seguranca.limpar_falhas(usuario)
+        return dados
