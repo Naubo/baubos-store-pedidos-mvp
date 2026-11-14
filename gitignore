@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Ambientes virtuais
+.venv/
+venv/
+env/
+
+# Segredos e configuração local (nunca enviar ao repositório)
+.env
+*.env
+
+# Django
+db.sqlite3
+db.sqlite3-journal
+*.log
+staticfiles/
+media/
+
+# Fotos e PDFs gerados pelo sistema (dados de clientes)
+uploads/
+pdfs/
+
+# Editores e sistema
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
