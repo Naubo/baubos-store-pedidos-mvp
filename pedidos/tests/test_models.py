@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.test import TestCase
 
 from pedidos.models import Pedido, Produto, calcular_folhas
@@ -7,8 +8,8 @@ def criar_produto(**extra):
     dados = {
         "nome": "Kit de bottons",
         "formato": "botton",
-        "largura_mm": 58,
-        "altura_mm": 58,
+        "largura_mm": 52,
+        "altura_mm": 52,
         "fotos_por_kit": 6,
         "itens_por_folha": 12,
     }
@@ -24,6 +25,28 @@ def criar_pedido(produto=None, quantidade=1):
         quantidade=quantidade,
         aceite_privacidade=True,
     )
+
+
+class ProdutoTests(TestCase):
+    def test_botton_de_52mm_cabe_12_por_folha(self):
+        self.assertEqual(criar_produto().itens_por_folha_real, 12)
+
+    def test_polaroid_de_75x55mm_usa_so_o_que_cabe_na_folha(self):
+        # Com margem de 10 mm e espaço de 4 mm entre as peças, cabem 2 x 4 = 8.
+        polaroid = criar_produto(nome="Kit de polaroids", formato="polaroid", largura_mm=75, altura_mm=55, itens_por_folha=11)
+        self.assertEqual(polaroid.itens_por_folha_real, 8)
+
+    def test_folhas_do_pedido_usam_a_capacidade_real(self):
+        polaroid = criar_produto(nome="Kit de polaroids", formato="polaroid", largura_mm=75, altura_mm=55, fotos_por_kit=8, itens_por_folha=11)
+        self.assertEqual(criar_pedido(polaroid, quantidade=2).folhas_necessarias, 2)
+
+    def test_botton_precisa_ser_redondo(self):
+        with self.assertRaises(ValidationError):
+            Produto(nome="x", formato="botton", largura_mm=52, altura_mm=40, fotos_por_kit=1, itens_por_folha=12).clean()
+
+    def test_peca_maior_que_a_folha_e_recusada(self):
+        with self.assertRaises(ValidationError):
+            Produto(nome="x", formato="polaroid", largura_mm=250, altura_mm=250, fotos_por_kit=1, itens_por_folha=1).clean()
 
 
 class CalculoDeFolhasTests(TestCase):

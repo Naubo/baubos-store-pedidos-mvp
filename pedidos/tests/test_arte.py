@@ -22,6 +22,12 @@ class LayoutTests(unittest.TestCase):
     def test_botton_de_58mm_cabe_12_por_folha(self):
         self.assertEqual(len(posicoes_na_folha(58, 58, 12)), 12)
 
+    def test_botton_de_52mm_cabe_12_por_folha(self):
+        self.assertEqual(len(posicoes_na_folha(52, 52, 12)), 12)
+
+    def test_polaroid_de_75x55mm_cabe_8_por_folha(self):
+        self.assertEqual(len(posicoes_na_folha(75, 55, 11)), 8)
+
     def test_nao_passa_do_que_cabe_na_folha(self):
         # Peça de 90x90 mm: cabem 2 colunas x 2 linhas = 4, mesmo pedindo 20.
         self.assertEqual(len(posicoes_na_folha(90, 90, 20)), 4)

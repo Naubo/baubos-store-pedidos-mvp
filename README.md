@@ -59,6 +59,15 @@ Depois disso:
 
 Variáveis de ambiente: `DJANGO_SECRET_KEY` (obrigatória fora do modo DEBUG), `DJANGO_DEBUG` (`1` liga o modo de desenvolvimento) e `DJANGO_ALLOWED_HOSTS` (lista separada por vírgulas). Segredos nunca são enviados ao repositório.
 
+### Medidas dos kits da Baubos Store
+
+| Kit | Medida | Cabem por folha A4 |
+|---|---|---|
+| Botton | 52 x 52 mm (diâmetro de 52 mm) | 12 |
+| Polaroid | 75 x 55 mm | 8 (margem de 10 mm e 4 mm entre as peças) |
+
+O sistema nunca coloca mais peças do que cabem na folha. O número de folhas do pedido usa esse valor real.
+
 ## Testes
 
 ```

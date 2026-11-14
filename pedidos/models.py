@@ -1,7 +1,10 @@
 import math
 
+from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+
+from .arte.layout import posicoes_na_folha
 
 
 class Produto(models.Model):
@@ -30,6 +33,21 @@ class Produto(models.Model):
 
     def __str__(self):
         return self.nome
+
+    def clean(self):
+        if not (self.largura_mm and self.altura_mm and self.itens_por_folha):
+            return
+        if self.formato == self.FORMATO_BOTTON and self.largura_mm != self.altura_mm:
+            raise ValidationError("Botton é redondo: largura e altura (diâmetro) devem ser iguais.")
+        try:
+            posicoes_na_folha(self.largura_mm, self.altura_mm, self.itens_por_folha)
+        except ValueError:
+            raise ValidationError("A peça é grande demais para caber em uma folha A4.")
+
+    @property
+    def itens_por_folha_real(self):
+        """Quantas peças realmente cabem na folha A4 (no máximo itens_por_folha)."""
+        return len(posicoes_na_folha(self.largura_mm, self.altura_mm, self.itens_por_folha))
 
 
 class Pedido(models.Model):
@@ -78,7 +96,7 @@ class Pedido(models.Model):
 
     @property
     def folhas_necessarias(self):
-        return calcular_folhas(self.total_fotos, self.produto.itens_por_folha)
+        return calcular_folhas(self.total_fotos, self.produto.itens_por_folha_real)
 
     @property
     def proximo_status(self):
