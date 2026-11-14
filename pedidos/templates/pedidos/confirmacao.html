@@ -1,0 +1,11 @@
+{% extends "pedidos/base.html" %}
+{% block titulo %}Pedido recebido - Baubos Store{% endblock %}
+{% block conteudo %}
+<div class="sucesso" role="status">
+  <p><span aria-hidden="true">✔</span> <strong>Sucesso:</strong> pedido recebido!</p>
+</div>
+<h1>Obrigado!</h1>
+<p>O número do seu pedido é <strong class="numero">{{ numero }}</strong>.</p>
+<p>Guarde esse número. Entraremos em contato pelo WhatsApp ou e-mail que você informou.</p>
+<a class="botao" href="{% url 'novo_pedido' %}">Fazer outro pedido</a>
+{% endblock %}
