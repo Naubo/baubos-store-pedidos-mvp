@@ -1,0 +1,34 @@
+{% extends "pedidos/base.html" %}
+{% block titulo %}Pedido {{ pedido.numero_pedido }} - Baubos Store{% endblock %}
+{% block conteudo %}
+<p><a href="{% url 'painel' %}">&larr; Voltar para a lista</a></p>
+<h1>Pedido {{ pedido.numero_pedido }}</h1>
+
+<dl>
+  <dt>Cliente</dt><dd>{{ pedido.cliente_nome }}</dd>
+  <dt>Contato</dt><dd>{{ pedido.cliente_contato }}</dd>
+  <dt>Kit</dt><dd>{{ pedido.produto.nome }} (x{{ pedido.quantidade }}) - {{ pedido.total_fotos }} fotos, {{ pedido.folhas_necessarias }} folha{{ pedido.folhas_necessarias|pluralize }} A4</dd>
+  <dt>Status</dt><dd><span class="status">{{ pedido.get_status_display }}</span></dd>
+  {% if pedido.observacoes %}<dt>Observações</dt><dd>{{ pedido.observacoes }}</dd>{% endif %}
+</dl>
+
+<p>
+  {% if pedido.pdf_arte %}<a class="botao" href="{% url 'baixar_pdf' pedido.numero_pedido %}">Baixar PDF para impressão</a>{% endif %}
+</p>
+
+{% if pedido.proximo_status %}
+<form method="post" action="{% url 'avancar_status' pedido.numero_pedido %}">
+  {% csrf_token %}
+  <button type="submit" class="botao">Avançar para: {{ pedido.proximo_status_nome }}</button>
+</form>
+{% else %}
+<p>Este pedido já foi enviado.</p>
+{% endif %}
+
+<h2>Fotos</h2>
+<ul class="fotos">
+  {% for f in fotos %}
+    <li><img src="{% url 'foto' f.pk %}" alt="Foto {{ f.ordem }} do pedido {{ pedido.numero_pedido }}" loading="lazy"></li>
+  {% endfor %}
+</ul>
+{% endblock %}

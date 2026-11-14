@@ -1,0 +1,32 @@
+{% load static %}<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}Baubos Store{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'pedidos/app.css' %}">
+</head>
+<body>
+  <a class="pular" href="#conteudo">Pular para o conteúdo</a>
+  <header class="topo">
+    <a class="marca" href="{% url 'novo_pedido' %}">Baubos Store</a>
+    {% if user.is_authenticated %}
+    <nav aria-label="Painel do responsável" class="menu">
+      <a href="{% url 'painel' %}">Pedidos</a>
+      <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="botao-link">Sair</button>
+      </form>
+    </nav>
+    {% endif %}
+  </header>
+  <main id="conteudo" class="conteudo">
+    {% if messages %}
+      {% for mensagem in messages %}
+        <p class="aviso" role="status">{{ mensagem }}</p>
+      {% endfor %}
+    {% endif %}
+    {% block conteudo %}{% endblock %}
+  </main>
+</body>
+</html>

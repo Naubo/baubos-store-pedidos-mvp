@@ -1,0 +1,5 @@
+[run]
+source = pedidos
+omit =
+    pedidos/migrations/*
+    pedidos/tests/*

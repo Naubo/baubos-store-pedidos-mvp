@@ -1,0 +1,39 @@
+{% extends "pedidos/base.html" %}
+{% block titulo %}Pedidos - Baubos Store{% endblock %}
+{% block conteudo %}
+<h1>Pedidos</h1>
+
+<form method="get" class="filtro">
+  <label for="status">Filtrar por status</label>
+  <select id="status" name="status">
+    <option value="">Todos</option>
+    {% for valor, nome in opcoes_status %}
+      <option value="{{ valor }}"{% if valor == status_atual %} selected{% endif %}>{{ nome }}</option>
+    {% endfor %}
+  </select>
+  <button type="submit" class="botao-pequeno">Filtrar</button>
+</form>
+
+{% if pedidos %}
+<table>
+  <caption class="sr-only">Lista dos 50 pedidos mais recentes</caption>
+  <thead>
+    <tr><th scope="col">Pedido</th><th scope="col">Cliente</th><th scope="col">Kit</th><th scope="col">Status</th><th scope="col">Data</th><th scope="col">PDF</th></tr>
+  </thead>
+  <tbody>
+  {% for p in pedidos %}
+    <tr>
+      <td><a href="{% url 'detalhe_pedido' p.numero_pedido %}">{{ p.numero_pedido }}</a></td>
+      <td>{{ p.cliente_nome }}</td>
+      <td>{{ p.produto.nome }} (x{{ p.quantidade }})</td>
+      <td><span class="status">{{ p.get_status_display }}</span></td>
+      <td>{{ p.criado_em|date:"d/m/Y H:i" }}</td>
+      <td>{% if p.pdf_arte %}<a href="{% url 'baixar_pdf' p.numero_pedido %}">Baixar PDF</a>{% else %}-{% endif %}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}
+  <p>Nenhum pedido encontrado.</p>
+{% endif %}
+{% endblock %}

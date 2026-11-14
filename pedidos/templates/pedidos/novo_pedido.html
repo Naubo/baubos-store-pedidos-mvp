@@ -1,0 +1,45 @@
+{% extends "pedidos/base.html" %}
+{% block titulo %}Fazer pedido - Baubos Store{% endblock %}
+{% block conteudo %}
+<h1>Faça seu pedido</h1>
+<p>Escolha o kit, envie suas fotos e pronto. Nós cuidamos do resto.</p>
+
+{% if not kits %}
+  <p class="erro" role="alert"><span aria-hidden="true">⚠</span> Erro: nenhum kit está disponível no momento.</p>
+{% else %}
+  <ul class="lista-kits" aria-label="Kits disponíveis">
+    {% for kit in kits %}
+      <li><strong>{{ kit.nome }}</strong>: {{ kit.fotos_por_kit }} foto{{ kit.fotos_por_kit|pluralize }} por kit</li>
+    {% endfor %}
+  </ul>
+{% endif %}
+
+{% if form.errors %}
+  <div class="resumo-erros" role="alert">
+    <span aria-hidden="true">⚠</span> Erro: confira os campos marcados abaixo e envie de novo.
+  </div>
+{% endif %}
+
+<form method="post" enctype="multipart/form-data" novalidate>
+  {% csrf_token %}
+  {% if form.non_field_errors %}
+    {% for erro in form.non_field_errors %}<p class="erro" role="alert"><span aria-hidden="true">⚠</span> Erro: {{ erro }}</p>{% endfor %}
+  {% endif %}
+  {% include "pedidos/_campo.html" with campo=form.cliente_nome %}
+  {% include "pedidos/_campo.html" with campo=form.cliente_contato %}
+  {% include "pedidos/_campo.html" with campo=form.produto %}
+  {% include "pedidos/_campo.html" with campo=form.quantidade %}
+  {% include "pedidos/_campo.html" with campo=form.fotos %}
+  {% include "pedidos/_campo.html" with campo=form.observacoes %}
+
+  <div class="grupo grupo-check{% if form.aceite_privacidade.errors %} com-erro{% endif %}">
+    {{ form.aceite_privacidade }}
+    <label for="{{ form.aceite_privacidade.id_for_label }}">{{ form.aceite_privacidade.label }}</label>
+    {% for erro in form.aceite_privacidade.errors %}
+      <p class="erro" role="alert"><span aria-hidden="true">⚠</span> Erro: {{ erro }}</p>
+    {% endfor %}
+  </div>
+
+  <button type="submit" class="botao">Enviar pedido</button>
+</form>
+{% endblock %}
