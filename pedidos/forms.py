@@ -27,6 +27,9 @@ class MultipleFileField(forms.FileField):
     def clean(self, data, initial=None):
         limpar = super().clean
         if isinstance(data, (list, tuple)):
+            if not data:
+                # Nenhuma foto enviada: o campo obrigatório precisa acusar o erro.
+                return [limpar(None, initial)]
             return [limpar(item, initial) for item in data]
         return [limpar(data, initial)]
 
