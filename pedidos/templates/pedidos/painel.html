@@ -4,14 +4,27 @@
 <h1>Pedidos</h1>
 
 <form method="get" class="filtro">
-  <label for="status">Filtrar por status</label>
-  <select id="status" name="status">
-    <option value="">Todos</option>
-    {% for valor, nome in opcoes_status %}
-      <option value="{{ valor }}"{% if valor == status_atual %} selected{% endif %}>{{ nome }}</option>
-    {% endfor %}
-  </select>
-  <button type="submit" class="botao-pequeno">Filtrar</button>
+  <div class="filtro-campo">
+    <label for="q">Buscar por nome do cliente ou número</label>
+    <input type="text" id="q" name="q" value="{{ busca }}" placeholder="Ex.: Simone ou BS-0003">
+  </div>
+  <div class="filtro-campo">
+    <label for="status">Status</label>
+    <select id="status" name="status">
+      <option value="">Todos</option>
+      {% for valor, nome in opcoes_status %}
+        <option value="{{ valor }}"{% if valor == status_atual %} selected{% endif %}>{{ nome }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="filtro-campo">
+    <label for="ordem">Ordenar por</label>
+    <select id="ordem" name="ordem">
+      <option value="recentes"{% if ordem == "recentes" %} selected{% endif %}>Data (mais recentes primeiro)</option>
+      <option value="cliente"{% if ordem == "cliente" %} selected{% endif %}>Nome do cliente (A a Z)</option>
+    </select>
+  </div>
+  <button type="submit" class="botao-pequeno">Buscar</button>
 </form>
 
 {% if pedidos %}
@@ -34,6 +47,6 @@
   </tbody>
 </table>
 {% else %}
-  <p>Nenhum pedido encontrado.</p>
+  <p>Nenhum pedido encontrado. Tente outro nome ou limpe a busca.</p>
 {% endif %}
 {% endblock %}

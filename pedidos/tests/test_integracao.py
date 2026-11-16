@@ -155,6 +155,28 @@ class PainelTests(BaseIntegracao):
         self.assertContains(self.client.get(reverse("painel"), {"status": "recebido"}), self.pedido.numero_pedido)
         self.assertNotContains(self.client.get(reverse("painel"), {"status": "pronto"}), self.pedido.numero_pedido)
 
+    def test_busca_por_nome_e_por_numero(self):
+        self.enviar_pedido(cliente_nome="Joana Lima")
+        outro = Pedido.objects.get(cliente_nome="Joana Lima")
+        self.entrar()
+        por_nome = self.client.get(reverse("painel"), {"q": "joana"}).content.decode()
+        self.assertIn("Joana Lima", por_nome)
+        self.assertNotIn("Maria Souza", por_nome)
+        por_numero = self.client.get(reverse("painel"), {"q": self.pedido.numero_pedido}).content.decode()
+        self.assertIn("Maria Souza", por_numero)
+        self.assertNotIn(outro.numero_pedido + "</a>", por_numero)
+
+    def test_ordenacao_por_nome_do_cliente(self):
+        self.enviar_pedido(cliente_nome="Joana Lima")
+        self.entrar()
+        pagina = self.client.get(reverse("painel"), {"ordem": "cliente"}).content.decode()
+        self.assertLess(pagina.index("Joana Lima"), pagina.index("Maria Souza"))
+
+    def test_busca_sem_resultado_mostra_mensagem(self):
+        self.entrar()
+        resposta = self.client.get(reverse("painel"), {"q": "ninguem-com-esse-nome"})
+        self.assertContains(resposta, "Nenhum pedido encontrado")
+
     def test_avancar_status_por_post(self):
         self.entrar()
         self.client.post(reverse("avancar_status", args=[self.pedido.numero_pedido]))
