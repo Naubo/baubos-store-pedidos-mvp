@@ -54,3 +54,4 @@ th, td { text-align: left; padding: .6rem; border-bottom: 1px solid #d1d5db; }
 .filtro select { width: auto; min-width: 12rem; }
 dt { font-weight: 600; margin-top: .5rem; }
 dd { margin: 0; }
+.resumo-fotos { font-weight: 600; padding: .5rem .75rem; border: 2px solid var(--marca); border-radius: 6px; margin: 0 0 1.25rem; }

@@ -1,4 +1,5 @@
 {% extends "pedidos/base.html" %}
+{% load static %}
 {% block titulo %}Fazer pedido - Baubos Store{% endblock %}
 {% block conteudo %}
 <h1>Faça seu pedido</h1>
@@ -29,6 +30,7 @@
   {% include "pedidos/_campo.html" with campo=form.cliente_contato %}
   {% include "pedidos/_campo.html" with campo=form.produto %}
   {% include "pedidos/_campo.html" with campo=form.quantidade %}
+  <p id="resumo-fotos" class="resumo-fotos" aria-live="polite">Escolha o kit e a quantidade para ver quantas fotos enviar.</p>
   {% include "pedidos/_campo.html" with campo=form.fotos %}
   {% include "pedidos/_campo.html" with campo=form.observacoes %}
 
@@ -42,4 +44,6 @@
 
   <button type="submit" class="botao">Enviar pedido</button>
 </form>
+{{ kits_json|json_script:"dados-kits" }}
+<script src="{% static 'pedidos/pedido.js' %}" defer></script>
 {% endblock %}

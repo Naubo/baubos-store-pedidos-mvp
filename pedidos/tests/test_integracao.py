@@ -57,6 +57,12 @@ class FormularioPublicoTests(BaseIntegracao):
         self.assertEqual(resposta.status_code, 200)
         self.assertContains(resposta, "Faça seu pedido")
 
+    def test_formulario_informa_quantas_fotos_enviar(self):
+        resposta = self.client.get(reverse("novo_pedido"))
+        self.assertContains(resposta, 'id="dados-kits"')
+        self.assertContains(resposta, "quantas fotos enviar")
+        self.assertContains(resposta, "pedidos/pedido.js")
+
     def test_pedido_valido_cria_pedido_fotos_e_pdf(self):
         resposta = self.enviar_pedido()
         self.assertRedirects(resposta, reverse("confirmacao"))

@@ -52,7 +52,7 @@ class PedidoForm(forms.Form):
     )
     fotos = MultipleFileField(
         label="Fotos (JPG ou PNG, até 15 MB cada)",
-        help_text="Envie todas as fotos de uma vez. O total deve ser igual ao número de fotos do kit vezes a quantidade.",
+        help_text="Envie todas as fotos de uma vez. O total é o número de fotos do kit vezes a quantidade, e aparece acima assim que você escolhe o kit.",
     )
     observacoes = forms.CharField(label="Observações", required=False, widget=forms.Textarea(attrs={"rows": 3}))
     aceite_privacidade = forms.BooleanField(
