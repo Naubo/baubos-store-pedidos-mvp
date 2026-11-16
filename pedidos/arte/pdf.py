@@ -32,7 +32,8 @@ def gerar_pdf(imagens, formato, largura_mm, altura_mm, itens_por_folha, titulo):
 
     for numero_folha in range(total_folhas):
         grupo = imagens[numero_folha * por_folha : (numero_folha + 1) * por_folha]
-        for dados, (x, y) in zip(grupo, posicoes):
+        for indice, (dados, (x, y)) in enumerate(zip(grupo, posicoes)):
+            numero_foto = numero_folha * por_folha + indice + 1
             with Image.open(io.BytesIO(dados)) as original:
                 ajustada = ImageOps.fit(
                     original.convert("RGB"),
@@ -41,9 +42,14 @@ def gerar_pdf(imagens, formato, largura_mm, altura_mm, itens_por_folha, titulo):
                 )
             pdf.drawImage(ImageReader(ajustada), x * mm, y * mm, largura_mm * mm, altura_mm * mm)
 
+            # Número da foto, fora da área de corte, igual ao número mostrado no painel.
+            pdf.setFont("Helvetica", 6)
+            pdf.setFillColorRGB(0.2, 0.2, 0.2)
+            pdf.drawString(x * mm, (y + altura_mm + 1) * mm, f"Foto {numero_foto}")
+
             # Guia de corte: círculo para botton, retângulo para polaroid.
-            pdf.setStrokeColorRGB(0.4, 0.4, 0.4)
-            pdf.setLineWidth(0.3)
+            pdf.setStrokeColorRGB(0, 0, 0)
+            pdf.setLineWidth(0.5)
             if formato == "botton":
                 raio = min(largura_mm, altura_mm) / 2
                 pdf.circle((x + largura_mm / 2) * mm, (y + altura_mm / 2) * mm, raio * mm)

@@ -48,6 +48,11 @@ class LayoutTests(unittest.TestCase):
 
 
 class PdfTests(unittest.TestCase):
+    def test_pdf_traz_o_numero_de_cada_foto(self):
+        pdf = gerar_pdf([foto() for _ in range(2)], "botton", 52, 52, 12, "BS-0004")
+        self.assertTrue(pdf.startswith(b"%PDF"))
+        self.assertEqual(contar_paginas(pdf), 1)
+
     def test_pdf_valido_com_uma_folha(self):
         pdf = gerar_pdf([foto() for _ in range(6)], "botton", 58, 58, 12, "BS-0001")
         self.assertTrue(pdf.startswith(b"%PDF"))

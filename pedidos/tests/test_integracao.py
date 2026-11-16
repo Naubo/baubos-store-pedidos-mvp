@@ -203,6 +203,14 @@ class PainelTests(BaseIntegracao):
         self.assertEqual(resposta["Content-Type"], "image/jpeg")
         b"".join(resposta.streaming_content)
 
+    def test_detalhe_mostra_dados_do_cliente_e_fotos_numeradas(self):
+        self.entrar()
+        pagina = self.client.get(reverse("detalhe_pedido", args=[self.pedido.numero_pedido]))
+        self.assertContains(pagina, "Maria Souza")
+        self.assertContains(pagina, "maria@exemplo.com")
+        self.assertContains(pagina, "Foto 1")
+        self.assertContains(pagina, "Foto 2")
+
     def test_pedido_inexistente_da_404(self):
         self.entrar()
         self.assertEqual(self.client.get(reverse("detalhe_pedido", args=["BS-9999"])).status_code, 404)

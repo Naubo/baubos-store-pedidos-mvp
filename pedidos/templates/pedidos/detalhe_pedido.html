@@ -25,10 +25,16 @@
 <p>Este pedido já foi enviado.</p>
 {% endif %}
 
-<h2>Fotos</h2>
+<h2>Fotos enviadas</h2>
+<p>O número de cada foto é o mesmo que aparece no PDF. Clique para ver em tamanho maior.</p>
 <ul class="fotos">
   {% for f in fotos %}
-    <li><img src="{% url 'foto' f.pk %}" alt="Foto {{ f.ordem }} do pedido {{ pedido.numero_pedido }}" loading="lazy"></li>
+    <li>
+      <a href="{% url 'foto' f.pk %}" target="_blank" rel="noopener">
+        <img src="{% url 'foto' f.pk %}" alt="Foto {{ f.ordem }} do pedido {{ pedido.numero_pedido }}" loading="lazy">
+      </a>
+      <span class="legenda-foto">Foto {{ f.ordem }}</span>
+    </li>
   {% endfor %}
 </ul>
 {% endblock %}
