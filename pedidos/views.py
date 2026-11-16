@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from django.http import FileResponse, Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
@@ -19,7 +20,8 @@ def novo_pedido(request):
     else:
         form = PedidoForm()
     kits = Produto.objects.filter(ativo=True)
-    return render(request, "pedidos/novo_pedido.html", {"form": form, "kits": kits})
+    kits_json = [{"id": k.pk, "nome": k.nome, "fotos": k.fotos_por_kit} for k in kits]
+    return render(request, "pedidos/novo_pedido.html", {"form": form, "kits": kits, "kits_json": kits_json})
 
 
 def confirmacao(request):
@@ -37,12 +39,26 @@ def confirmacao(request):
 def painel(request):
     """Tela 2: lista dos pedidos com filtro por status (RF04)."""
     status = request.GET.get("status", "")
+    busca = request.GET.get("q", "").strip()
+    ordem = request.GET.get("ordem", "recentes")
     pedidos = Pedido.objects.select_related("produto")
     if status in Pedido.ORDEM_STATUS:
         pedidos = pedidos.filter(status=status)
     else:
         status = ""
-    contexto = {"pedidos": pedidos[:50], "status_atual": status, "opcoes_status": Pedido.STATUS}
+    if busca:
+        pedidos = pedidos.filter(Q(cliente_nome__icontains=busca) | Q(numero_pedido__icontains=busca))
+    if ordem == "cliente":
+        pedidos = pedidos.order_by("cliente_nome", "-criado_em")
+    else:
+        ordem = "recentes"
+    contexto = {
+        "pedidos": pedidos[:50],
+        "status_atual": status,
+        "opcoes_status": Pedido.STATUS,
+        "busca": busca,
+        "ordem": ordem,
+    }
     return render(request, "pedidos/painel.html", contexto)
 
 

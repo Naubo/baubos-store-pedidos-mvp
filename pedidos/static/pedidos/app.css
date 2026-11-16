@@ -44,13 +44,15 @@ a { color: var(--marca); }
 table { width: 100%; border-collapse: collapse; }
 th, td { text-align: left; padding: .6rem; border-bottom: 1px solid #d1d5db; }
 .status { display: inline-block; padding: .15rem .6rem; border-radius: 999px; border: 2px solid var(--marca); font-weight: 600; font-size: .9rem; }
-.fotos { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: .5rem; padding: 0; list-style: none; }
+.fotos { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: .5rem; padding: 0; list-style: none; }
 .fotos img { width: 100%; height: auto; border-radius: 4px; }
 .painel { max-width: 70rem; }
 @media (min-width: 900px) { .conteudo.painel { padding: 1.5rem; } }
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .filtro { display: flex; flex-wrap: wrap; align-items: end; gap: .75rem; margin-bottom: 1rem; }
-.filtro label { width: 100%; margin: 0; }
-.filtro select { width: auto; min-width: 12rem; }
+.filtro-campo { flex: 1 1 14rem; }
+.filtro select { min-width: 12rem; }
 dt { font-weight: 600; margin-top: .5rem; }
 dd { margin: 0; }
+.resumo-fotos { font-weight: 600; padding: .5rem .75rem; border: 2px solid var(--marca); border-radius: 6px; margin: 0 0 1.25rem; }
+.legenda-foto { display: block; font-weight: 600; text-align: center; }
