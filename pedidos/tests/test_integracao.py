@@ -272,3 +272,10 @@ class LoginTests(BaseIntegracao):
 
         with self.assertRaises(ValidationError):
             validate_password("curta123")
+
+
+class SaudeTests(TestCase):
+    def test_endpoint_de_saude_responde_ok_sem_login(self):
+        resposta = self.client.get(reverse("saude"))
+        self.assertEqual(resposta.status_code, 200)
+        self.assertEqual(resposta.json(), {"status": "ok"})
