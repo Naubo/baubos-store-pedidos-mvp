@@ -25,6 +25,10 @@ ALLOWED_HOSTS = [h for h in os.environ.get("DJANGO_ALLOWED_HOSTS", "").split(","
 if DEBUG and not ALLOWED_HOSTS:
     ALLOWED_HOSTS = ["localhost", "127.0.0.1", "testserver"]
 
+# Origens confiáveis para o CSRF atrás do proxy HTTPS da hospedagem.
+# Exemplo: DJANGO_CSRF_TRUSTED_ORIGINS=https://usuario.pythonanywhere.com
+CSRF_TRUSTED_ORIGINS = [o for o in os.environ.get("DJANGO_CSRF_TRUSTED_ORIGINS", "").split(",") if o]
+
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",

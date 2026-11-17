@@ -69,6 +69,12 @@ Variáveis de ambiente: `DJANGO_SECRET_KEY` (obrigatória fora do modo DEBUG), `
 
 O sistema nunca coloca mais peças do que cabem na folha. O número de folhas do pedido usa esse valor real.
 
+## Publicação (PythonAnywhere) e monitoramento
+
+Publicado em um servidor de nuvem público (PythonAnywhere, plano gratuito), com a aplicação Django em uma aplicação web manual (WSGI), SQLite no próprio servidor e arquivos estáticos servidos pelo mapeamento `/static/` para `staticfiles/`. Variáveis de ambiente usadas em produção: `DJANGO_SECRET_KEY`, `DJANGO_ALLOWED_HOSTS` e `DJANGO_CSRF_TRUSTED_ORIGINS` (o modo DEBUG fica desligado).
+
+Monitoramento: o endereço `/saude/` responde `{"status": "ok"}` quando o app e o banco estão de pé. Ele é verificado de 5 em 5 minutos pelo UptimeRobot e, como reserva, a cada 30 minutos pelo workflow `.github/workflows/monitoramento.yml`, que falha (e avisa por e-mail) se o serviço sair do ar.
+
 ## Testes
 
 ```

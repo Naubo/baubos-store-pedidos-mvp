@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from django.http import FileResponse, Http404
+from django.http import FileResponse, Http404, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 
@@ -100,3 +100,15 @@ def baixar_pdf(request, numero):
         filename=f"{pedido.numero_pedido}.pdf",
         content_type="application/pdf",
     )
+
+
+def saude(request):
+    """Verificação de saúde para o monitoramento: responde 200 se o app e o banco estão de pé.
+
+    Não exige login e não devolve nenhum dado de pedido ou de cliente.
+    """
+    try:
+        Produto.objects.exists()
+    except Exception:
+        return JsonResponse({"status": "erro"}, status=503)
+    return JsonResponse({"status": "ok"})

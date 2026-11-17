@@ -1,0 +1,25 @@
+name: Monitoramento
+
+# Verifica a cada 30 minutos se o MVP em produção está no ar.
+# Se a verificação falhar, o workflow fica vermelho e o GitHub avisa por e-mail.
+# A URL fica na variável de repositório URL_PRODUCAO (Settings > Secrets and variables > Actions > Variables).
+on:
+  schedule:
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+
+jobs:
+  verificar-disponibilidade:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Chamar o endereço de saúde
+        env:
+          URL_PRODUCAO: ${{ vars.URL_PRODUCAO }}
+        run: |
+          if [ -z "$URL_PRODUCAO" ]; then
+            echo "Variável URL_PRODUCAO não definida. Nada a verificar."
+            exit 0
+          fi
+          resposta=$(curl -fsS --max-time 30 "$URL_PRODUCAO/saude/")
+          echo "Resposta: $resposta"
+          echo "$resposta" | grep -q '"status": "ok"'
