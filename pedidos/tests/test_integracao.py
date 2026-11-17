@@ -1,4 +1,5 @@
 import io
+import os
 import shutil
 import tempfile
 
@@ -182,6 +183,28 @@ class PainelTests(BaseIntegracao):
         self.client.post(reverse("avancar_status", args=[self.pedido.numero_pedido]))
         self.pedido.refresh_from_db()
         self.assertEqual(self.pedido.status, Pedido.STATUS_EM_PRODUCAO)
+
+    def test_ao_marcar_como_enviado_fotos_e_pdf_sao_apagados(self):
+        caminhos = [f.arquivo.path for f in self.pedido.fotos.all()] + [self.pedido.pdf_arte.path]
+        for caminho in caminhos:
+            self.assertTrue(os.path.exists(caminho))
+        self.entrar()
+        for _ in range(3):  # recebido -> em produção -> pronto -> enviado
+            self.client.post(reverse("avancar_status", args=[self.pedido.numero_pedido]))
+        self.pedido.refresh_from_db()
+        self.assertEqual(self.pedido.status, Pedido.STATUS_ENVIADO)
+        self.assertIsNotNone(self.pedido.fotos_apagadas_em)
+        self.assertFalse(self.pedido.pdf_arte)
+        self.assertEqual(self.pedido.fotos.count(), 0)
+        for caminho in caminhos:
+            self.assertFalse(os.path.exists(caminho))
+        pagina = self.client.get(reverse("detalhe_pedido", args=[self.pedido.numero_pedido]))
+        self.assertContains(pagina, "foram apagados")
+
+    def test_fotos_nao_sao_apagadas_antes_do_envio(self):
+        self.entrar()
+        self.client.post(reverse("avancar_status", args=[self.pedido.numero_pedido]))
+        self.assertEqual(self.pedido.fotos.count(), 2)
 
     def test_avancar_status_por_get_nao_e_permitido(self):
         self.entrar()

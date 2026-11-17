@@ -3,6 +3,7 @@ import math
 from django.core.exceptions import ValidationError
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.utils import timezone
 
 from .arte.layout import posicoes_na_folha
 
@@ -75,6 +76,7 @@ class Pedido(models.Model):
     status = models.CharField(max_length=15, choices=STATUS, default=STATUS_RECEBIDO)
     aceite_privacidade = models.BooleanField(default=False)
     pdf_arte = models.FileField(upload_to="pdfs/", null=True, blank=True)
+    fotos_apagadas_em = models.DateTimeField(null=True, blank=True)
     criado_em = models.DateTimeField(auto_now_add=True)
     atualizado_em = models.DateTimeField(auto_now=True)
 
@@ -117,6 +119,20 @@ class Pedido(models.Model):
             raise ValueError("O pedido já foi enviado e não tem próxima etapa.")
         self.status = proximo
         self.save(update_fields=["status", "atualizado_em"])
+        if proximo == self.STATUS_ENVIADO:
+            # Privacidade: o aceite do cliente diz que as fotos são apagadas depois do envio.
+            self.apagar_arquivos()
+
+    def apagar_arquivos(self):
+        """Apaga do disco as fotos e o PDF do pedido (RF07) e registra quando isso foi feito."""
+        for foto in self.fotos.all():
+            foto.arquivo.delete(save=False)
+            foto.delete()
+        if self.pdf_arte:
+            self.pdf_arte.delete(save=False)
+        self.pdf_arte = None
+        self.fotos_apagadas_em = timezone.now()
+        self.save(update_fields=["pdf_arte", "fotos_apagadas_em", "atualizado_em"])
 
 
 class Foto(models.Model):

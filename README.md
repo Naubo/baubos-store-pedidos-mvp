@@ -3,7 +3,7 @@
 Sistema web para organizar os pedidos de produtos personalizados da Baubos Store, uma loja de Pindamonhangaba (SP). O cliente envia as fotos por um formulário no celular e o sistema gera o PDF pronto para impressão, no layout do kit escolhido (polaroids e bottons).
 
 > Projeto da disciplina de Projeto de Software, do curso de Análise e Desenvolvimento de Sistemas (Cruzeiro do Sul Virtual).
-> **Status: MVP com RF01 a RF05 implementados.** RF06 e RF07 ficam para a próxima versão.
+> **Status: MVP com RF01 a RF05 e RF07 implementados.** RF06 (estoque de papel) fica para a próxima versão.
 
 ## Problema
 
@@ -19,10 +19,11 @@ Obrigatórios:
 - **RF04**: painel do responsável com a lista de pedidos, filtro por status e download do PDF.
 - **RF05**: mudança de status do pedido (recebido, em produção, pronto, enviado), sempre em ordem.
 
-Desejáveis (podem ficar para uma próxima versão):
+- **RF07**: limpeza das fotos e do PDF quando o pedido passa para Enviado, como informado ao cliente no aceite de privacidade.
+
+Desejável que ficou para uma próxima versão:
 
 - **RF06**: baixa automática do papel e alerta de saldo baixo.
-- **RF07**: limpeza das fotos e PDFs de pedidos já enviados.
 
 ## Tecnologias
 

@@ -26,7 +26,11 @@
 {% endif %}
 
 <h2>Fotos enviadas</h2>
+{% if pedido.fotos_apagadas_em %}
+<p class="aviso">As fotos e o PDF deste pedido foram apagados em {{ pedido.fotos_apagadas_em|date:"d/m/Y H:i" }}, depois do envio, para proteger a privacidade do cliente.</p>
+{% else %}
 <p>O número de cada foto é o mesmo que aparece no PDF. Clique para ver em tamanho maior.</p>
+{% endif %}
 <ul class="fotos">
   {% for f in fotos %}
     <li>
